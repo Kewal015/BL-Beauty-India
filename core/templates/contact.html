@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --brand-blue: #8CB4E0;
+        --brand-dark: #0f172a;
+        --glass-white: rgba(255, 255, 255, 0.95);
+        --success-green: #22c55e;
+        --error-red: #ef4444;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+        background: #f8fafc;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    .contact-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        background: radial-gradient(circle at top right, rgba(140, 180, 224, 0.15), transparent),
+                    radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.05), transparent);
+    }
+
+    .premium-form-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 3rem;
+        border-radius: 40px;
+        box-shadow: 0 40px 100px -20px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        width: 100%;
+        max-width: 850px;
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.8s var(--ease-out-expo);
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+        .premium-form-card { padding: 2rem 1.5rem; border-radius: 30px; }
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 16px 20px;
+        background: #f1f5f9;
+        border: 2px solid transparent;
+        border-radius: 18px;
+        transition: all 0.4s var(--ease-out-expo);
+        outline: none;
+        font-weight: 500;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--brand-blue);
+        background: #ffffff;
+        box-shadow: 0 15px 30px -10px rgba(140, 180, 224, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-otp {
+        background: var(--brand-blue);
+        color: white;
+        padding: 0 24px;
+        height: 56px;
+        border-radius: 14px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-otp:hover:not(:disabled) {
+        background: var(--brand-dark);
+        transform: scale(1.02);
+    }
+
+    .btn-submit {
+        background: var(--brand-dark);
+        color: white;
+        padding: 20px;
+        border-radius: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.5s var(--ease-out-expo);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        border: none;
+        cursor: not-allowed;
+        opacity: 0.4;
+    }
+
+    .btn-submit.verified {
+        background: var(--brand-blue);
+        cursor: pointer;
+        opacity: 1;
+        box-shadow: 0 20px 40px -10px rgba(140, 180, 224, 0.5);
+    }
+
+    #smsStatus {
+        font-size: 11px;
+        font-weight: 800;
+        margin-top: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        min-height: 14px;
+    }
+
+    .otp-wrapper {
+        display: none;
+        margin-top: 15px;
+        padding: 20px;
+        background: rgba(140, 180, 224, 0.05);
+        border-radius: 20px;
+        border: 1px dashed var(--brand-blue);
+        animation: reveal 0.6s var(--ease-out-expo);
+    }
+
+    .footer-logo-container img {
+        max-height: 50px;
+        width: auto;
+        display: block;
+    }
+
+    @keyframes reveal {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+</style>
+
+<div class="contact-wrapper">
+    <div class="premium-form-card" id="formCard">
+        <div class="text-center mb-12">
+            <span class="brand-blue-text font-black uppercase tracking-[0.3em] text-xs">Direct Factory Access</span>
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 mt-3 tracking-tighter">Verified Inquiry.</h2>
+            <p class="text-slate-500 mt-4 font-medium text-sm md:text-base">Please generate a verification code to initiate a direct manufacturing consultation.</p>
+        </div>
+
+        <form id="combinedForm" class="space-y-6">
+            <div class="field-grid">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Full Name *</label>
+                    <input type="text" id="name" placeholder="John Doe" class="form-control-custom" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Brand Name</label>
+                    <input type="text" id="company" placeholder="Company Name" class="form-control-custom">
+                </div>
+            </div>
+
+            <div class="field-grid">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Work Email</label>
+                    <input type="email" id="email" placeholder="name@brand.com" class="form-control-custom">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Phone Number *</label>
+                    <div class="flex gap-2">
+                        <input type="tel" id="phone" placeholder="10-Digit Mobile Number" class="form-control-custom" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                        <button type="button" id="sendOtpBtn" class="btn-otp">Generate Code</button>
+                    </div>
+                    <span id="smsStatus"></span>
+                </div>
+            </div>
+
+            <div id="otpSection" class="otp-wrapper">
+                <label class="block text-xs font-black text-slate-700 uppercase mb-2 ml-1">Enter 4-Digit Code *</label>
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" id="otpInput" placeholder="0 0 0 0" class="form-control-custom text-center tracking-[1em] flex-1 min-w-[150px]" maxlength="4">
+                    <button type="button" id="verifyOtpBtn" class="btn-otp" style="background: var(--brand-dark);">Verify Code</button>
+                </div>
+                <p id="otpMsg" class="text-xs mt-3 font-bold"></p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Nature of Inquiry *</label>
+                <select id="service" class="form-control-custom" required>
+                    <option value="" disabled selected>Select Service Type</option>
+                    <option value="Private Label">Private Label Manufacturing</option>
+                    <option value="Custom Formulation">Custom Formulation (R&D)</option>
+                    <option value="Bulk Supply">Bulk Supply / Raw Materials</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Brief Requirements *</label>
+                <textarea id="message" rows="4" placeholder="How can we help build your brand?" class="form-control-custom resize-none" required></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit" disabled>
+                Submit Verified Inquiry
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </form>
+
+        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="brand-blue-bg p-3 rounded-2xl flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+                <div class="text-left">
+                    <p class="text-slate-900 font-bold text-sm leading-tight">BL Beauty (Maha Gujarat Industrial Estate)</p>
+                    <p class="text-slate-400 text-xs uppercase tracking-wider font-bold mt-1">Ahmedabad, Gujarat</p>
+                </div>
+            </div>
+
+            <div class="footer-logo-container flex-shrink-0">
+                <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385828/logo_hqkmkt.png" alt="Logo">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let generatedOtp = null;
+let isVerified = false;
+
+document.getElementById('sendOtpBtn').addEventListener('click', function() {
+    const phone = document.getElementById('phone').value;
+    const statusEl = document.getElementById('smsStatus');
+
+    if(phone.length !== 10) {
+        statusEl.innerText = "Please enter exactly 10 digits";
+        statusEl.style.color = "var(--error-red)";
+        return;
+    }
+
+    // Generate Code
+    generatedOtp = Math.floor(1000 + Math.random() * 9000);
+
+    // Show Popup SMS Simulation
+    alert("SMS VERIFICATION\n\nYour BL Beauty verification code is: " + generatedOtp);
+
+    // Update UI
+    statusEl.innerText = "Code displayed in popup window";
+    statusEl.style.color = "var(--success-green)";
+    document.getElementById('otpSection').style.display = 'block';
+    this.innerText = "Regenerate Code";
+});
+
+document.getElementById('verifyOtpBtn').addEventListener('click', function() {
+    const userOtp = document.getElementById('otpInput').value.trim();
+    const msg = document.getElementById('otpMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if(userOtp == generatedOtp) {
+        isVerified = true;
+        msg.innerText = "Number Verified Successfully";
+        msg.style.color = "var(--success-green)";
+        submitBtn.disabled = false;
+        submitBtn.classList.add('verified');
+        document.getElementById('phone').readOnly = true;
+        document.getElementById('sendOtpBtn').style.display = 'none';
+        this.disabled = true;
+        document.getElementById('otpInput').readOnly = true;
+    } else {
+        msg.innerText = "Incorrect Code. Please check the popup and try again.";
+        msg.style.color = "var(--error-red)";
+        document.getElementById('otpInput').value = '';
+    }
+});
+
+document.getElementById('combinedForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if(!isVerified) return;
+
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const service = document.getElementById('service').value;
+    const message = document.getElementById('message').value;
+
+    const targetNumber = "919825940080";
+    const formattedText = `*NEW VERIFIED INQUIRY*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Type:* ${service}%0A*Requirements:* ${message}`;
+    const whatsappUrl = `https://wa.me/${targetNumber}?text=${formattedText}`;
+
+    window.open(whatsappUrl, '_blank');
+});
+
+window.onload = () => {
+    document.getElementById('formCard').style.opacity = '1';
+    document.getElementById('formCard').style.transform = 'translateY(0)';
+};
+</script>
+{% endblock %}

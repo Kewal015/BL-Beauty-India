@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Global Performance & Smoothness */
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Full-bleed image styling - Updated to 'contain' to prevent cropping */
+    .product-grid-img {
+        width: 100%;
+        height: 400px;
+        object-fit: contain; /* Changed from cover to contain */
+        object-position: center;
+        background-color: #f8fafc; /* Adds a light neutral background for letterboxing */
+        /* Hardware acceleration */
+        transform: translate3d(0,0,0);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .product-card {
+        -webkit-tap-highlight-color: transparent;
+        will-change: transform, box-shadow;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .product-card:hover .product-grid-img {
+        transform: scale(1.05) translate3d(0,0,0);
+    }
+
+    .view-overlay {
+        background: linear-gradient(to bottom, rgba(140, 180, 224, 0.1), rgba(140, 180, 224, 0.3));
+        backdrop-filter: blur(2px);
+        will-change: opacity;
+        transition: opacity 0.4s ease;
+    }
+
+    /* Blur effect for background - Optimized */
+    .blur-bg {
+        filter: blur(12px) brightness(0.9);
+        transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        user-select: none;
+        transform: scale(1.02); /* Prevents white edges during blur */
+    }
+
+    /* Full-screen Modal Container */
+    #productModal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(15, 23, 42, 0.7); /* Deep Slate with transparency */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    #productModal.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        max-width: 1000px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: scale(0.9) translate3d(0, 20px, 0);
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        scrollbar-width: none; /* Firefox */
+    }
+
+    #productModal.active .modal-content {
+        transform: scale(1) translate3d(0, 0, 0);
+    }
+
+    .modal-content::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    /* Modal Image adjustment */
+    #modalImg {
+        object-fit: contain;
+        background-color: #f8fafc;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .product-grid-img {
+            height: 250px; /* Reduced height for better mobile 2-column fit */
+        }
+        .modal-content {
+            width: 100%;
+            margin: 10px;
+        }
+        .product-card .p-8 {
+            padding: 1.25rem !important; /* Smaller padding on mobile */
+        }
+    }
+</style>
+
+<div id="mainContent" class="transition-all duration-500">
+    <section class="py-20 bg-gray-50 text-center border-b border-gray-100">
+        <div class="max-w-4xl mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 mb-6 tracking-tight">Our Manufacturing Range</h1>
+            <p class="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Explore our high-end formulations for private label and bulk manufacturing.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-12 md:py-24 px-4 md:px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
+
+                <div id="prod-lipsticks" onclick="openModal('Lipsticks', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385826/lipsticks_jg9klk.png', 'Matte, Glossy & Liquid Formulations', 'Our lipstick manufacturing line specializes in long-wear, highly pigmented formulations. We offer a variety of finishes including velvet matte, satin, and high-shine gloss.')"
+                     class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
+                    <div class="relative overflow-hidden bg-gray-50">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385826/lipsticks_jg9klk.png" class="product-grid-img" alt="Lipstick">
+                        <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Quick View</span>
+                        </div>
+                    </div>
+                    <div class="p-4 md:p-8 text-center">
+                        <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Lipsticks</h3>
+                        <p class="text-[#8CB4E0] font-bold uppercase tracking-widest text-[10px] md:text-xs">Matte, Glossy & Liquid</p>
+                    </div>
+                </div>
+
+                <div id="prod-facewash" onclick="openModal('Face Wash', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385826/facewash_ris6m9.png', 'Deep Cleansing & Herbal Blends', 'Formulated for various skin types, our face washes range from gentle foaming cleansers to deep-exfoliating charcoal blends.')"
+                     class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
+                    <div class="relative overflow-hidden bg-gray-50">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385826/facewash_ris6m9.png" class="product-grid-img" alt="Face Wash">
+                        <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Quick View</span>
+                        </div>
+                    </div>
+                    <div class="p-4 md:p-8 text-center">
+                        <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Face Wash</h3>
+                        <p class="text-[#8CB4E0] font-bold uppercase tracking-widest text-[10px] md:text-xs">Deep Cleansing</p>
+                    </div>
+                </div>
+
+                <div id="prod-hairserum" onclick="openModal('Hair Serum', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385827/hairserum_rgxn4o.png', 'Frizz Control & Nourishing Oils', 'Our hair serums are infused with essential oils and heat protectants to provide a salon-finish shine and strength.')"
+                     class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
+                    <div class="relative overflow-hidden bg-gray-50">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385827/hairserum_rgxn4o.png" class="product-grid-img" alt="Hair Serum">
+                        <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Quick View</span>
+                        </div>
+                    </div>
+                    <div class="p-4 md:p-8 text-center">
+                        <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Hair Serum</h3>
+                        <p class="text-[#8CB4E0] font-bold uppercase tracking-widest text-[10px] md:text-xs">Frizz Control</p>
+                    </div>
+                </div>
+
+                <div id="prod-shampoo" onclick="openModal('Shampoo', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385827/shampoo_dwmltz.jpg', 'Sulfate-Free & Volume Enhancing', 'Advanced hair care solutions focusing on scalp health and hair volume using premium sulfate-free ingredients.')"
+                     class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
+                    <div class="relative overflow-hidden bg-gray-50">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385827/shampoo_dwmltz.jpg" class="product-grid-img" alt="Shampoo">
+                        <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Quick View</span>
+                        </div>
+                    </div>
+                    <div class="p-4 md:p-8 text-center">
+                        <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Shampoo</h3>
+                        <p class="text-[#8CB4E0] font-bold uppercase tracking-widest text-[10px] md:text-xs">Volume Enhancing</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="productModal" onclick="closeModal(event)">
+    <div class="modal-content bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row relative mx-auto my-auto" onclick="event.stopPropagation()">
+
+        <button onclick="closeModal(event)" class="absolute top-4 right-4 md:top-8 md:right-8 z-[60] bg-white/80 backdrop-blur-md text-slate-800 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-slate-800 hover:text-white transition-all duration-300 shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <div class="w-full md:w-1/2 h-64 md:h-auto bg-gray-50 overflow-hidden">
+            <img id="modalImg" src="" class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-1000" alt="Product">
+        </div>
+
+        <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+            <h2 id="modalTitle" class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-4 tracking-tight"></h2>
+            <p id="modalSub" class="text-[#8CB4E0] font-bold uppercase tracking-widest text-xs md:text-sm mb-6 md:mb-8"></p>
+            <p id="modalDesc" class="text-gray-500 text-base md:text-lg leading-relaxed mb-8 md:mb-10"></p>
+
+            <a href="/contact/" style="background-color: #8CB4E0;" class="text-center text-white px-8 py-4 md:px-10 md:py-5 rounded-full text-base md:text-lg font-bold hover:bg-slate-800 transition-all duration-300 shadow-xl hover:-translate-y-1">
+                Inquire for Manufacturing
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(title, img, sub, desc) {
+        const modal = document.getElementById('productModal');
+        const main = document.getElementById('mainContent');
+
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalImg').src = img;
+        document.getElementById('modalSub').innerText = sub;
+        document.getElementById('modalDesc').innerText = desc;
+
+        modal.style.display = 'flex';
+        // Small timeout to allow display:flex to register before adding animation class
+        setTimeout(() => {
+            modal.classList.add('active');
+            main.classList.add('blur-bg');
+        }, 10);
+
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = '15px'; // Prevents layout shift
+    }
+
+    function closeModal(event) {
+        const modal = document.getElementById('productModal');
+        const main = document.getElementById('mainContent');
+
+        modal.classList.remove('active');
+        main.classList.remove('blur-bg');
+
+        // Wait for transition to finish before hiding display
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.body.style.paddingRight = '0px';
+        }, 400);
+    }
+
+    // Keyboard support (Escape key to close)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // Check for hash in URL to handle highlights from other pages
+    window.addEventListener('load', () => {
+        if (window.location.hash) {
+            const targetId = window.location.hash.substring(1);
+            const target = document.getElementById(targetId);
+            if (target) {
+                setTimeout(() => {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    target.classList.add('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4', 'scale-105');
+                    setTimeout(() => target.classList.remove('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4', 'scale-105'), 3000);
+                }, 800);
+            }
+        }
+    });
+</script>
+
+{% endblock %}

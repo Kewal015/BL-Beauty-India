@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Global Smoothness & Speed Optimization */
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .section-title {
+        color: #1e293b;
+    }
+
+    .brand-accent {
+        color: #8CB4E0;
+    }
+
+    /* Hero Visibility & Positioning Logic - Optimized for Speed */
+    .hero-container {
+        position: relative;
+        min-height: 650px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #fff;
+        will-change: transform;
+    }
+
+    .hero-img-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+    }
+
+    .hero-img-overlay img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: brightness(0.95) contrast(1.02);
+    }
+
+    .dynamic-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(to right, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    }
+
+    /* Responsive Image Handling - Pixel Perfect */
+    .desktop-hero-img {
+        display: block;
+    }
+    .mobile-hero-img {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .hero-container {
+            min-height: 550px;
+            align-items: center;
+        }
+        .dynamic-overlay {
+            background: rgba(255,255,255,0.6);
+        }
+        .desktop-hero-img {
+            display: none;
+        }
+        .mobile-hero-img {
+            display: block;
+        }
+    }
+
+    /* Animation Performance */
+    .pillar-card {
+        transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        will-change: transform;
+    }
+
+    .pillar-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .pillar-card:hover .pillar-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .pillar-icon {
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<section class="hero-container">
+    <div class="hero-img-overlay">
+        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385825/about-hero_bw3zu5.jpg" alt="BL Beauty Manufacturing" class="desktop-hero-img">
+        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/hero-about-mobile_r7fnu9.png" alt="BL Beauty Manufacturing" class="mobile-hero-img">
+    </div>
+    <div class="dynamic-overlay"></div>
+    <div class="relative z-[10] max-w-7xl mx-auto px-6 w-full">
+        <div class="max-w-2xl text-left">
+            <span class="text-[#8CB4E0] uppercase tracking-widest font-bold mb-3 block">Since 1994</span>
+            <h1 class="text-5xl md:text-7xl font-bold text-slate-800 mb-6 leading-tight">
+                Beauty Built on <br>
+                <span class="brand-accent">Legacy & Science</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-700 font-medium leading-relaxed mb-8">
+                From a small manufacturing unit to India's leading private label partner. We don't just manufacture products; we build brands.
+            </p>
+            <div class="flex gap-4">
+                <div class="bg-white/80 backdrop-blur px-6 py-3 rounded-2xl border border-blue-100 shadow-sm">
+                    <span class="block text-2xl font-bold text-slate-800">30+</span>
+                    <span class="text-xs text-gray-500 uppercase font-bold">Years Experience</span>
+                </div>
+                <div class="bg-white/80 backdrop-blur px-6 py-3 rounded-2xl border border-blue-100 shadow-sm">
+                    <span class="block text-2xl font-bold text-slate-800">500+</span>
+                    <span class="text-xs text-gray-500 uppercase font-bold">Formulations</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-white">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+        <div class="relative">
+            <div class="rounded-[2rem] overflow-hidden shadow-2xl">
+                <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385825/heritage_q2mf9t.jpg" alt="Our Heritage" class="w-full h-[450px] md:h-[600px] object-cover">
+            </div>
+            <div class="absolute -bottom-6 -right-4 md:-right-6 bg-slate-800 text-white p-6 md:p-10 rounded-2xl shadow-xl border-b-4 border-[#8CB4E0]">
+                <p class="text-4xl md:text-5xl font-bold">Atmiya</p>
+                <p class="text-[10px] md:text-xs uppercase tracking-widest text-[#8CB4E0] mt-1 font-bold">The Foundation</p>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <h2 class="text-4xl md:text-5xl font-bold section-title leading-tight">Where Innovation <br>Began.</h2>
+            <p class="text-gray-600 leading-relaxed text-lg">
+                Our journey started with our first dedicated unit, <span class="font-semibold text-slate-800">Atmiya Products</span>. This facility served as our research hub where we mastered the complexities of skin-care chemistry and surfactant science.
+            </p>
+            <p class="text-gray-600 leading-relaxed text-lg">
+                Our reputation for quality reached industry leaders early on. We are proud to have been the original manufacturing backbone for <span class="text-slate-900 font-bold">Beardo India</span> during their foundational years, meticulously developing their flagship beard oils and grooming essentials that disrupted the Indian market.
+            </p>
+            <div class="bg-[#F0F7FF] p-8 rounded-[2rem] border-l-4 border-[#8CB4E0]">
+                <h4 class="font-bold text-slate-800 text-xl mb-2">Startup Friendly: Low MOQ Solutions</h4>
+                <p class="text-slate-600">
+                    We believe every big brand starts small. Unlike other giant manufacturers, **we offer manufacturing even at Low MOQs (Minimum Order Quantities)**. Whether you are an influencer launching a boutique line or a startup testing the waters, we provide the same premium quality without the burden of massive inventory.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-slate-900 text-white rounded-[3rem] mx-4 md:mx-10">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4">Our Core Pillars</h2>
+            <p class="text-gray-400">Why the most ambitious beauty brands choose BL Beauty India.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-12">
+            <div class="pillar-card text-center space-y-4">
+                <div class="pillar-icon w-20 h-20 bg-[#8CB4E0]/20 rounded-full mx-auto transition-transform duration-300">
+                    <span class="text-4xl">🔬</span>
+                </div>
+                <h3 class="text-2xl font-bold">R&D Focused</h3>
+                <p class="text-gray-400">Our in-house lab constantly experiments with trending ingredients like Salicylic acid, Vitamin C, and herbal extracts.</p>
+            </div>
+            <div class="pillar-card text-center space-y-4">
+                <div class="pillar-icon w-20 h-20 bg-[#8CB4E0]/20 rounded-full flex items-center justify-center mx-auto transition-transform duration-300">
+                    <svg class="w-10 h-10 text-[#8CB4E0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold">Quality First</h3>
+                <p class="text-gray-400">From pH balancing to microbial testing, every batch undergoes a 12-point quality check before it leaves our floor.</p>
+            </div>
+            <div class="pillar-card text-center space-y-4">
+                <div class="pillar-icon w-20 h-20 bg-[#8CB4E0]/20 rounded-full flex items-center justify-center mx-auto transition-transform duration-300">
+                    <svg class="w-10 h-10 text-[#8CB4E0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold">Scalability</h3>
+                <p class="text-gray-400">We grow with you. Our facilities can handle small pilot batches to massive million-unit monthly runs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-white">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1 space-y-8">
+                <div class="inline-block px-4 py-1 rounded-full bg-blue-100 text-[#8CB4E0] font-bold text-sm uppercase tracking-wider">
+                    The Future: Moraiya Plant
+                </div>
+                <h3 class="text-4xl md:text-5xl font-bold text-slate-800 leading-tight">State-of-the-Art <br>Facility at Changodar</h3>
+                <p class="text-gray-600 leading-relaxed text-lg">
+                    In 2020, we expanded our horizons by launching **BL Beauty India** in the industrial hub of Changodar (Moraiya). This facility was designed with a "Global Standard" philosophy.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-gray-100">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/rnd-lab_db4fqg.jpg" alt="R&D Lab" class="w-full h-32 object-cover rounded-xl mb-4">
+                        <span class="block text-xl font-bold text-slate-800">Advanced Lab</span>
+                        <span class="text-gray-500 text-sm">Real-time stability testing and custom R&D.</span>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-gray-100">
+                        <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385816/factory-wide_oumk4h.jpg" alt="Production" class="w-full h-32 object-cover rounded-xl mb-4">
+                        <span class="block text-xl font-bold text-slate-800">Modern Lines</span>
+                        <span class="text-gray-500 text-sm">Automated filling and packaging systems.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                 <div class="rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/facility_gv1pgn.png" alt="BL Beauty Facility" class="w-full h-[500px] md:h-[700px] object-cover transition-transform duration-700 hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                    <div class="absolute bottom-10 left-10 text-white">
+                        <p class="text-2xl font-bold">Changodar Unit</p>
+                        <p class="text-sm opacity-80">GMP Compliant Manufacturing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-slate-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold section-title mb-4">End-to-End Solutions</h2>
+            <p class="text-gray-500 max-w-2xl mx-auto">Whether you need us to handle everything or just the manufacturing, we have a plan for you.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="glass-card p-8 md:p-12 rounded-[2.5rem] group hover:bg-[#8CB4E0] transition-all duration-500">
+                <div class="flex items-start justify-between mb-8">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center group-hover:bg-white/20">
+                        <svg class="w-8 h-8 brand-accent group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                    </div>
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/small-batch_vt9uyh.jpg" alt="Low MOQ" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold mb-4 group-hover:text-white">White Labeling & Low MOQ</h3>
+                <p class="text-gray-600 group-hover:text-white/90 leading-relaxed">
+                    Pick from our library of 500+ proven formulations. We customize the packaging and labels for you. **Perfect for smaller initial orders** to help you scale without massive risk.
+                </p>
+            </div>
+
+            <div class="glass-card p-8 md:p-12 rounded-[2.5rem] group hover:bg-slate-800 transition-all duration-500">
+                <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-white/20">
+                    <svg class="w-8 h-8 text-slate-800 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-10V4m-5 10h.01M15 7h.01M15 11h.01M15 15h.01M11 15h.01M11 19h.01M15 19h.01"></path></svg>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold mb-4 group-hover:text-white">Contract Manufacturing</h3>
+                <p class="text-gray-600 group-hover:text-white/90 leading-relaxed">
+                    Already have a formula? We provide the heavy lifting. High-volume production, global standard raw material sourcing, and logistics management for national brands.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 text-center bg-white">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl md:text-5xl font-bold text-slate-800 mb-6">Let's Create Your Next Bestseller</h2>
+        <p class="text-gray-500 text-lg mb-10">Whether it's 100 units or 100,000—we deliver excellence every single time.</p>
+        <a href="/contact/" class="inline-block bg-[#8CB4E0] text-white px-12 py-5 rounded-full text-xl font-bold hover:bg-slate-800 transition-all shadow-xl hover:-translate-y-2 active:scale-95">
+            Start Your Business Inquiry
+        </a>
+    </div>
+</section>
+
+<script>
+    // Simplified Script: No opacity manipulation to prevent image "disappearing"
+    document.addEventListener('DOMContentLoaded', () => {
+        // High-speed link transition
+        const ctaButtons = document.querySelectorAll('a[href^="/"]');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                document.body.style.opacity = '0.8';
+                document.body.style.transition = 'opacity 0.2s ease';
+            });
+        });
+    });
+</script>
+
+{% endblock %}

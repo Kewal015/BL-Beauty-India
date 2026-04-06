@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --brand-blue: #8CB4E0;
+        --brand-dark: #0f172a;
+        --body-text: #334155;
+        --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        --hover-shadow: 0 40px 80px -15px rgba(140, 180, 224, 0.3);
+        /* This variable will be automatically updated by the script below */
+        --nav-height: 80px;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Positioning below Header - Set to 0 to remove gap */
+    .blog-main-wrapper {
+        margin-top: 0;
+        background: #f8fafc;
+        min-height: 100vh;
+        transition: filter 0.5s var(--ease-out-expo);
+    }
+
+    /* Hero Section - Compact and Modern */
+    .blog-hero {
+        background: var(--brand-dark);
+        padding: 8rem 2rem 12rem; /* Balanced padding for header clearance */
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .blog-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% 50%, rgba(140, 180, 224, 0.1) 0%, transparent 70%);
+    }
+
+    /* The "Pop-Out" Container */
+    .blog-container {
+        max-width: 1300px;
+        margin: -8rem auto 8rem; /* Pulls the cards UP into the hero for a layered look */
+        padding: 0 2rem;
+        position: relative;
+        z-index: 20;
+    }
+
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 2.5rem;
+    }
+
+    /* 3D Pop-Out Card Effect */
+    .blog-card {
+        grid-column: span 4;
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
+        transition: all 0.6s var(--ease-out-expo); /* Smoothly buttery transition */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--card-shadow);
+        cursor: pointer;
+        will-change: transform, box-shadow;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .blog-card:nth-child(1) { grid-column: span 8; display: flex; height: 500px; }
+    .blog-card:nth-child(1) .card-img-box { width: 55%; height: 100%; }
+    .blog-card:nth-child(1) .card-body { width: 45%; display: flex; flex-direction: column; justify-content: center; }
+
+    .blog-card:hover {
+        transform: translateY(-20px) scale(1.02) translate3d(0,0,0); /* Aggressive but smooth pop out */
+        box-shadow: var(--hover-shadow);
+        z-index: 30;
+    }
+
+    .card-img-box { height: 280px; overflow: hidden; position: relative; }
+    .card-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s var(--ease-out-expo); }
+    .blog-card:hover .card-img-box img { transform: scale(1.1); }
+
+    .card-body { padding: 2.5rem; background: white; }
+    .tag { font-size: 0.7rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; display: block; }
+    .blog-h { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); line-height: 1.2; margin-bottom: 1rem; }
+
+    /* The Reader Experience (Full Pop-out Modal) */
+    #editorialModal {
+        display: none;
+        position: fixed;
+        top: var(--nav-height); /* Starts exactly below the Navbar */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 999; /* Set slightly lower than navbar if navbar has high z-index */
+        overflow-y: auto;
+        height: calc(100vh - var(--nav-height)); /* Ensure it doesn't extend beyond viewport */
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+        transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+        scrollbar-gutter: stable;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #editorialModal.active {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    /* NEW: Container for the post content that provides the padding you requested */
+    .modal-content-inner {
+        padding: 0 4rem 4rem; /* Top: 0 because of sticky nav, Left/Right: 4rem, Bottom: 4rem */
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .modal-nav {
+        position: sticky;
+        top: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        padding: 1.2rem 4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f1f5f9;
+        z-index: 100;
+        margin: 0 -4rem; /* Pull nav back out to edges despite parent padding */
+    }
+
+    .reading-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: #f1f5f9; }
+    #progressBar { width: 0%; height: 100%; background: var(--brand-blue); transition: width 0.2s ease; }
+
+    .article-header { max-width: 850px; margin: 5rem auto 3rem; text-align: center; padding: 0 1rem; }
+    .article-main-img { max-width: 1000px; margin: 0 auto; height: 550px; border-radius: 40px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.15); }
+    .article-main-img img { width: 100%; height: 100%; object-fit: cover; transform: translate3d(0,0,0); }
+
+    .article-body {
+        max-width: 750px; margin: 4rem auto;
+        font-family: 'Georgia', serif; font-size: 1.25rem; line-height: 2; color: var(--body-text);
+        padding: 0 1.5rem;
+    }
+
+    .dropcap { float: left; font-size: 5.5rem; font-weight: 900; line-height: 0.8; margin-right: 0.8rem; color: var(--brand-blue); }
+
+    .pull-quote {
+        font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--brand-dark);
+        border-left: 5px solid var(--brand-blue); padding-left: 2rem; margin: 3.5rem 0; line-height: 1.4; font-style: italic;
+    }
+
+    @media (max-width: 1024px) {
+        .blog-card, .blog-card:nth-child(1) { grid-column: span 12; flex-direction: column; height: auto; }
+        .blog-card:nth-child(1) .card-img-box, .blog-card:nth-child(1) .card-body { width: 100%; }
+        .blog-hero { padding: 6rem 1.5rem 10rem; }
+        .blog-hero h1 { font-size: 3.5rem; }
+        .blog-container { margin-top: -6rem; padding: 0 1.25rem; }
+        .blog-grid { gap: 1.5rem; }
+        .card-body { padding: 1.5rem; }
+        .modal-nav { padding: 1rem 1.5rem; margin: 0 -1.5rem; }
+        .modal-content-inner { padding: 0 1.5rem 2rem; }
+        .article-header { margin: 3rem auto 2rem; }
+        .article-header h1 { font-size: 2.25rem; }
+        .article-main-img { height: 300px; border-radius: 20px; }
+        .article-body { font-size: 1.15rem; margin: 2rem auto; }
+        .pull-quote { font-size: 1.4rem; padding-left: 1.5rem; margin: 2.5rem 0; }
+        .blog-card:hover { transform: translateY(-10px) scale(1.01); }
+    }
+</style>
+
+<div class="blog-main-wrapper" id="pageWrapper">
+    <div class="blog-hero">
+        <span class="text-[#8CB4E0] font-black uppercase tracking-[0.4em] text-xs mb-4 block">Manufacturing Intelligence</span>
+        <h1 class="text-6xl md:text-7xl font-black text-white mb-6 tracking-tighter">The Beauty <span class="italic font-light text-slate-400">Archive.</span></h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto font-light leading-relaxed">Exclusive insights into the future of cosmetic formulation and business scaling in India.</p>
+    </div>
+
+    <main class="blog-container">
+        <div class="blog-grid" id="masterGrid"></div>
+    </main>
+</div>
+
+<div id="editorialModal">
+    <div class="modal-content-inner">
+        <div class="modal-nav">
+            <div class="flex items-center gap-3">
+                <span class="bg-[#8CB4E0] text-white px-3 py-1 rounded-md font-bold text-xs">BLB</span>
+                <span class="font-bold text-slate-900 tracking-tight">EDITORIAL READER</span>
+            </div>
+            <button onclick="closeReader()" class="text-xs font-black uppercase tracking-widest bg-slate-100 px-5 py-2 rounded-full hover:bg-slate-900 hover:text-white transition-all duration-300">Close &times;</button>
+            <div class="reading-progress-container">
+                <div id="progressBar"></div>
+            </div>
+        </div>
+
+        <article>
+            <div class="article-header">
+                <span id="m-cat" class="tag"></span>
+                <h1 id="m-title" class="text-5xl font-black text-slate-900 leading-tight"></h1>
+                <p id="m-excerpt" class="text-xl text-slate-500 mt-6 font-light italic"></p>
+            </div>
+
+            <div class="article-main-img">
+                <img id="m-img" src="">
+            </div>
+
+            <div id="m-body" class="article-body"></div>
+
+            <div class="max-w-[750px] mx-auto pb-20 px-6">
+                <div class="p-10 bg-slate-900 rounded-[40px] text-center shadow-2xl">
+                    <h3 class="text-white text-2xl font-bold mb-4">Start Your Brand Journey</h3>
+                    <p class="text-slate-400 mb-8">Ready to bring these formulations to life under your own label?</p>
+                    <a href="/contact" class="bg-[#8CB4E0] text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-slate-900 transition-all duration-300 inline-block">Inquire Now</a>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<script>
+// Navbar height calculator to prevent overlap
+function updateNavHeight() {
+    const nav = document.querySelector('nav') || document.querySelector('header');
+    if (nav) {
+        const height = nav.offsetHeight;
+        document.documentElement.style.setProperty('--nav-height', height + 'px');
+    }
+}
+
+// Run on load and on resize
+window.addEventListener('resize', updateNavHeight);
+window.addEventListener('load', updateNavHeight);
+
+const blogPosts = [
+    {
+        title: "The Zero-Sulphate Revolution: Why Clean Labels are Winning E-Commerce",
+        cat: "Formulation Science",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385822/blog1_eelkdv.png",
+        excerpt: "Decoding the chemistry of mild surfactants and why Sodium Lauroyl Methyl Isethionate is the new gold standard.",
+        full: `The Indian hair care landscape is undergoing a seismic shift. No longer are consumers satisfied with generic, chemical-heavy shampoos that prioritize foam over follicular health. They are looking for 'clean labels'—products that list ingredients they can actually pronounce and understand. This trend is most visible on high-growth platforms like Flipkart and Amazon, where 'Sulphate-Free' has moved from a niche search term to a primary filter for millions of shoppers. <br><br> At BL Beauty, our research and development center in Moraiya has spent the last three years anticipating this shift. We’ve perfected the use of Sodium Lauroyl Methyl Isethionate (SLMI), a high-performance surfactant derived entirely from coconut oil. Unlike traditional Sodium Lauryl Sulphate (SLS) or SLES, which can strip the hair’s natural acid mantle and lead to chronic scalp irritation, SLMI provides a dense, luxurious lather that is incredibly mild. <br><br> <div class="pull-quote">"True luxury in modern cosmetics is no longer defined by how much a product foams, but by how much it protects."</div> For a brand to succeed in the 2026 market, the focus must shift toward long-term user experience rather than immediate, aggressive cleansing. We conduct rigorous viscosity and stability testing to ensure our shampoos feel premium from the first pump to the last drop. We also incorporate synergistic 'boosters' like Cold-Pressed Moroccan Argan Oil and Pro-Vitamin B5 (Panthenol) to actively repair damaged hair cuticles while cleansing. <br><br> When you manufacture your private label line with us in Ahmedabad, you aren't just getting a generic liquid in a bottle. You are getting a proprietary formulation designed to survive the extreme temperatures of the Indian climate without losing its pearlescent finish or active potency. In a world where one bad review can sink a product's organic ranking, investing in the molecular integrity of your formula is the only sustainable way to build a brand that generates repeat purchases and long-term loyalty.`
+    },
+    {
+        title: "Private Label 2.0: Scaling a Beauty Brand to 100 Crores and Beyond",
+        cat: "Business Growth",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385823/blog2_plypje.png",
+        excerpt: "A tactical roadmap for D2C founders to navigate manufacturing hurdles and supply chain scaling.",
+        full: `Scaling a beauty brand from a small startup to a national powerhouse requires more than just high-quality influencer marketing. It requires a manufacturing backbone that can scale with you without compromising on quality or regulatory compliance. Many D2C brands hit what we call the 'Production Wall'—a point where their small-scale suppliers simply cannot keep up with a sudden spike in demand following a successful marketing campaign. <br><br> Our facility in the Maha Gujarat Industrial Estate was built specifically to solve this problem. We operate on a 'Growth Partnership' model. This means we offer low Minimum Order Quantities (MOQs) for startups who are testing the market, but we maintain the massive industrial capacity required to produce over 100,000 units per month when a product goes viral. We take over the technical complexities of manufacturing: stability testing, microbiological analysis, and international labeling compliance. <br><br> <div class="pull-quote">"In the D2C world, your marketing is your promise, but your manufacturing is your reputation."</div> Take the lipstick market, for example. Creating a formula that is intensely matte but feels like silk on the lips is a balancing act of waxes, esters, and pigments. Our lab uses precision-controlled milling to ensure pigments are dispersed at a micron level, eliminating grittiness. By trusting a professional manufacturer like BL Beauty with your production, you free up your creative bandwidth to focus on community building and storytelling. In the 2026 economy, the winners will be those who combine agile digital marketing with rock-solid, industrial-grade quality control. The journey to a 100-crore exit starts with choosing a partner who can handle your growth today and your dominance tomorrow.`
+    },
+    {
+        title: "The Vitamin C Paradox: Why Stability is the Secret to Glowing Reviews",
+        cat: "Skincare Tech",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385821/blog3_wroqvu.png",
+        excerpt: "How advanced stabilization and nitrogen purging are revolutionizing antioxidant skincare.",
+        full: `Vitamin C is arguably the most loved ingredient in modern skincare, but it is also the most difficult to work with. L-Ascorbic Acid, the purest form of Vitamin C, is a notoriously 'unhappy' molecule. It loves to oxidize, and when it does, it turns your expensive serum into a bottle of useless, potentially irritating orange water. If your customers are complaining that their serum changed color after just two weeks on the shelf, your brand's credibility is at immediate risk. <br><br> At BL Beauty, we’ve developed a three-stage stabilization protocol to solve this 'Vitamin C Paradox.' First, we utilize high-purity Ferulic Acid and Vitamin E as co-antioxidants. Research shows that this combination doesn't just stabilize the formula; it actually doubles the photoprotective benefits of the Vitamin C, providing a superior result for the end-user. Second, we utilize nitrogen-purged filling lines in our Ahmedabad factory. By displacing oxygen with nitrogen during the bottling process, we effectively 'freeze' the formula in its most active state. <br><br> <div class="pull-quote">"A serum that stays clear for six months is a serum that stays in the customer's cart for a lifetime."</div> Finally, we provide expert guidance on packaging. We source high-density amber glass or airless pump systems that prevent light and air from degrading the formula. When a consumer sees a crystal-clear, potent serum every morning, they see real-world results: brighter skin, faded dark spots, and a healthy glow. And when they see results, they post the high-quality photo reviews on Amazon that drive your organic search ranking into the top tier. Formulating with scientific precision, rather than just chasing buzzwords, is how you create a cult-favorite product that survives the scrutiny of today's savvy skincare enthusiasts.`
+    },
+    {
+        title: "Ahmedabad: The Strategic Powerhouse of the Cosmetic Supply Chain",
+        cat: "Market Logistics",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385821/blog4_wjkmbg.png",
+        excerpt: "Exploring why the Moraiya industrial corridor is the most competitive hub for beauty manufacturing in India.",
+        full: `While Bangalore is celebrated for software and Mumbai for its financial markets, Ahmedabad has quietly emerged as the heartbeat of the Indian cosmetic supply chain. Specifically, the Moraiya and Maha Gujarat Industrial Estates are now home to some of the most technologically advanced cosmetic R&D centers in South Asia. But what makes this region so dominant? The answer lies in a unique synergy of logistics, raw material access, and industrial legacy. <br><br> As a manufacturer based here, BL Beauty enjoys immediate proximity to India's largest chemical manufacturing hub. This means our raw material costs are lower because we aren't paying for trans-national shipping, and our supply chain is more consistent even during global disruptions. Furthermore, being located near major ports like Mundra allows us to import the world's most premium active ingredients—from French peptides to South Korean plant extracts—with significantly less lead time than manufacturers in landlocked northern regions. <br><br> <div class="pull-quote">"Logistics is the invisible ingredient that determines whether your brand is profitable or just popular."</div> For a brand owner, this translates to an incredible competitive advantage: Speed. In the world of 'Fast Beauty,' where a trend can go from an Instagram Reel to a global demand in days, being able to go from concept to a shelf-ready product in 60 days is a superpower. We leverage this local ecosystem to give our clients international-grade manufacturing at a price point that allows for aggressive margins on Amazon and Flipkart. Ahmedabad isn't just where we build; it's why we win. By choosing to manufacture your brand here, you are tapping into an industrial legacy that guarantees your brand is built on a foundation of quality, scale, and unparalleled speed.`
+    },
+    {
+        title: "The Art of Matte: Perfecting the Long-Wear Liquid Lipstick",
+        cat: "Pigment Science",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385821/blog5_paw2fo.png",
+        excerpt: "Achieving the impossible balance between extreme pigment and weightless comfort.",
+        full: `In the world of decorative cosmetics, the liquid matte lipstick remains the most technically challenging product to master. Consumers today demand a paradox: a product that provides intense, opaque color with a single swipe, lasts for twelve hours without smudging, yet feels completely weightless and non-drying on the lips. <br><br> At BL Beauty, we utilize 'Flexible Film-Former' technology. Traditional long-wear lipsticks use rigid resins that crack as the lips move, leading to the dreaded 'flaking' effect. Our formulas use a specialized silicone-based polymer network that moves with the lips, maintaining a smooth, velvet-like finish all day. We also incorporate micronized hyaluronic acid spheres that hydrate the lips from within. <br><br> <div class="pull-quote">"Color is a statement, but comfort is a luxury that brings customers back for every new shade."</div> Our pigment dispersion process is equally meticulous. We use high-shear triple-roll mills to ensure that every pigment particle is coated in a lightweight ester. This prevents clumping and ensures that the color remains vibrant and true to the bottle shade. For brand owners, this means fewer returns and higher customer satisfaction scores on platforms where shade accuracy and wearability are the top drivers of five-star reviews.`
+    },
+    {
+        title: "Modern Ayurveda: Bridging Ancient Wisdom and Clinical Efficacy",
+        cat: "Herbal Innovation",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385821/blog6_s7qmct.png",
+        excerpt: "How we use CO2 extraction to bring traditional Indian ingredients into the 21st century.",
+        full: `Ayurveda is part of India’s cultural DNA, but the modern global consumer is no longer satisfied with 'hope in a jar.' They want proof. The challenge for contemporary herbal brands is to take traditional ingredients like Bhringraj, Brahmi, and Ashwagandha and prove their efficacy through modern clinical standards. At BL Beauty, we specialize in this 'Modern Ayurveda.' <br><br> The secret lies in our extraction methods. Most manufacturers use simple water or alcohol extractions, which often leave behind the most potent active compounds or degrade them with high heat. We utilize Supercritical CO2 Extraction. This 'cold' process uses compressed carbon dioxide to gently pull the most concentrated phytonutrients from the plant without any chemical residues. <br><br> <div class="pull-quote">"Ancient wisdom provides the map, but modern science provides the vehicle to reach real results."</div> For example, our hair growth oils don't just 'contain' Bhringraj; they contain a standardized percentage of Wedelolactone, the active molecule responsible for hair follicle stimulation. We then pair these potent herbals with modern delivery systems like liposomes, which encapsulate the herbal actives and carry them deeper into the skin. This fusion of heritage and high-tech is what allows our clients to claim 'Clinical Ayurveda' on their packaging.`
+    },
+    {
+        title: "Sunscreen Formulation: The Invisible Shield for Indian Skin",
+        cat: "Skincare Tech",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385823/blog7_r7pyt7.png",
+        excerpt: "Solving the white-cast problem while providing broad-spectrum protection in high humidity.",
+        full: `Sunscreen is the most critical product in any skincare line, yet it is notoriously difficult to formulate for the Indian climate. Between the intense UV index, high humidity, and diverse range of skin tones, a one-size-fits-all approach usually fails. Consumers often reject sunscreens because they are too greasy or leave a 'white cast.' <br><br> We have solved this through 'Aqueous-Gel' technology and the use of micronized mineral filters. By shrinking Zinc Oxide and Titanium Dioxide particles to a sub-micron level and suspending them in a water-based gel, we’ve created a formula that provides SPF 50+ protection while disappearing completely into the skin. <br><br> <div class="pull-quote">"The best sunscreen is the one the consumer actually wants to wear every single day."</div> Beyond just SPF, our formulas are built to be 'City-Proof.' We incorporate Ectoin and Pollustop—bio-polymers that create a breathable barrier against urban smog and blue light. This multi-layered protection is exactly what the modern urban professional is searching for. For a brand owner, offering a sunscreen that feels like a lightweight moisturizer is the fastest way to build a loyal customer base.`
+    },
+    {
+        title: "The Science of Scalp Health: Why Hair Care Starts Below the Surface",
+        cat: "Trichology",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385820/blog8_fdyhyi.png",
+        excerpt: "Moving beyond 'shine' to treat the root cause of hair fall and dandruff.",
+        full: `For decades, the hair care industry focused almost exclusively on the hair shaft—making it look shiny and soft. However, modern trichology has revealed that the secret to long-term hair health lies in the scalp microbiome. When this balance is disrupted by harsh shampoos, it leads to inflammation, dandruff, and eventually, hair thinning. <br><br> At BL Beauty, we are shifting the focus from 'Hair Care' to 'Scalp Science.' Our latest formulations incorporate prebiotics and postbiotics that nourish the beneficial bacteria on the scalp, strengthening the skin barrier. We also utilize Salicylic Acid and Piroctone Olamine in micro-doses to gently exfoliate dead skin cells and control oil production. <br><br> <div class="pull-quote">"A healthy scalp is the fertile soil from which beautiful hair grows; you cannot have one without the other."</div> We also specialize in 'Caffeine-Infusion' technology. By incorporating encapsulated caffeine into our scalp serums, we can stimulate blood micro-circulation around the hair follicles. This evidence-based approach to hair thinning is highly effective and provides our clients with a powerful 'Science-First' marketing angle.`
+    },
+    {
+        title: "Sustainable Packaging: The Future of Luxury is Circular",
+        cat: "Eco-Innovation",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385818/blog9_t1iuzw.png",
+        excerpt: "Navigating the transition to PCR plastics and glass without losing premium appeal.",
+        full: `The cosmetic industry has a plastic problem, and the modern consumer knows it. We are seeing a massive shift in purchasing behavior, with shoppers actively boycotting brands that use non-recyclable packaging. However, for a luxury brand, the challenge is to be sustainable without looking 'cheap.' <br><br> We help our clients navigate this transition through 'Circular Design.' This includes sourcing Post-Consumer Recycled (PCR) plastics that look and feel identical to new material. We also specialize in 'Mono-Material' packaging—bottles and pumps made from a single type of plastic, making them 100% recyclable. For our ultra-luxury clients, we offer high-density glass and refillable 'pod' systems. <br><br> <div class="pull-quote">"Sustainability is no longer a marketing 'extra'; it is the price of entry for the next generation of brands."</div> By choosing sustainable packaging, your brand can apply for 'Climate Pledge Friendly' badges on Amazon, which has been shown to increase conversion rates significantly. We believe that the future of beauty is one where the packaging is as carefully formulated as the product inside.`
+    },
+    {
+        title: "The Multi-Masking Trend: Customizing Skincare for the 'Self-Care' Era",
+        cat: "Product Strategy",
+        img: "https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385818/blog10_ywke5s.png",
+        excerpt: "How clay, charcoal, and fruit enzymes are driving the explosion in mask-based treatments.",
+        full: `The 'Self-Care' movement has transformed skincare from a chore into a ritual. At the center of this ritual is the face mask. No longer just a 'once-a-month' treatment, masks are now used as targeted solutions for specific skin concerns—a practice known as 'Multi-Masking.' <br><br> At BL Beauty, we’ve mastered the chemistry of suspension. Our proprietary 'Humectant-Lock' technology ensures that our masks remain creamy and easy to spread for up to 24 months. We use high-adsorption Activated Charcoal that acts as a molecular vacuum, paired with Kaolin clay to refine skin texture without stripping moisture. <br><br> <div class="pull-quote">"In a digital world, masks offer a physical, tactical experience that connects the consumer to the brand."</div> We are also seeing high demand for 'Enzymatic Peels'—masks that use fruit enzymes like Papain and Bromelain to dissolve dead skin cells chemically. These 'Physical-Free' exfoliants are perfect for sensitive skin and provide an immediate 'glow' that users love to share on social media. By offering a range of targeted masks, your brand can increase its 'Average Order Value' easily.`
+    }
+];
+
+function renderGrid() {
+    const grid = document.getElementById('masterGrid');
+    grid.innerHTML = blogPosts.map((post, i) => `
+        <article class="blog-card" onclick="openReader(${i})">
+            <div class="card-img-box">
+                <img src="${post.img}" alt="${post.title}" loading="lazy">
+            </div>
+            <div class="card-body">
+                <span class="tag">${post.cat}</span>
+                <h3 class="blog-h">${post.title}</h3>
+                <p class="text-slate-500 line-clamp-2 text-sm">${post.excerpt}</p>
+                <div class="mt-8 font-black text-xs tracking-widest text-slate-400 border-t pt-6 flex justify-between items-center transition-colors hover:text-slate-900">
+                    <span>CONTINUE READING</span>
+                    <span>&rarr;</span>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function openReader(index) {
+    const post = blogPosts[index];
+    const modal = document.getElementById('editorialModal');
+
+    // Populate data
+    document.getElementById('m-title').innerText = post.title;
+    document.getElementById('m-cat').innerText = post.cat;
+    document.getElementById('m-excerpt').innerText = post.excerpt;
+    document.getElementById('m-img').src = post.img;
+
+    const editorialBody = `<span class="dropcap">${post.full.trim().charAt(0)}</span>${post.full.trim().slice(1)}`;
+    document.getElementById('m-body').innerHTML = editorialBody;
+
+    // MANDATORY RESET: Start at the top for every blog post
+    modal.scrollTop = 0;
+    document.getElementById("progressBar").style.width = "0%";
+
+    // Smooth show
+    modal.style.display = 'block';
+
+    // Tiny timeout to allow display:block to paint so transition works
+    setTimeout(() => {
+        modal.classList.add('active');
+        // Double-enforce scroll top just in case transition triggers layout shifts
+        modal.scrollTop = 0;
+        document.getElementById('pageWrapper').style.filter = 'blur(10px)';
+    }, 10);
+
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+
+    modal.onscroll = function() {
+        let winScroll = modal.scrollTop;
+        let height = modal.scrollHeight - modal.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("progressBar").style.width = scrolled + "%";
+    };
+}
+
+function closeReader() {
+    const modal = document.getElementById('editorialModal');
+    modal.classList.remove('active');
+    document.getElementById('pageWrapper').style.filter = 'none';
+
+    // Wait for transition to finish before hiding
+    setTimeout(() => {
+        modal.style.display = 'none';
+        modal.scrollTop = 0; // Force reset scroll for next time
+        document.body.style.overflow = 'auto';
+    }, 500);
+}
+
+// Close on Escape Key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeReader();
+});
+
+updateNavHeight();
+renderGrid();
+</script>
+{% endblock %}
