@@ -257,6 +257,32 @@
         }
     }
 </style>
+<style>
+    :root {
+        --mobile-sticky-top: 0px;
+    }
+
+    .top-category-links {
+        position: relative;
+        z-index: 30;
+        transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .top-category-links {
+            position: sticky;
+            top: var(--mobile-sticky-top);
+            z-index: 40;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .top-category-links.is-sticky {
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+    }
+</style>
 
 <div id="mainContent" class="transition-all duration-500">
 <section class="hero-section py-20 text-center border-b border-white/10">
@@ -307,7 +333,7 @@
     </div>
 </section>
 
-    <section class="top-category-links py-4 px-4">
+<section id="topCategoryBar" class="top-category-links py-4 px-4">
         <div class="max-w-7xl mx-auto">
             <div class="top-category-links-wrap">
                 <a href="#soaps" class="top-category-link">Soaps</a>
@@ -1177,5 +1203,45 @@
         }
     });
 </script>
+<script>
+    function getStickyHeaderOffset() {
+        const headerCandidates = document.querySelectorAll(
+            'header, .site-header, .main-header, .navbar, .top-header, nav'
+        );
+
+        for (const el of headerCandidates) {
+            const styles = window.getComputedStyle(el);
+            const isFixedOrSticky = styles.position === 'fixed' || styles.position === 'sticky';
+
+            if (isFixedOrSticky && el.offsetHeight > 0) {
+                return el.offsetHeight;
+            }
+        }
+
+        return 0;
+    }
+
+    function updateCategoryBarStickyOffset() {
+        const categoryBar = document.getElementById('topCategoryBar');
+        if (!categoryBar) return;
+
+        const isMobile = window.innerWidth <= 768;
+        const headerOffset = isMobile ? getStickyHeaderOffset() : 0;
+
+        document.documentElement.style.setProperty('--mobile-sticky-top', `${headerOffset}px`);
+
+        if (isMobile) {
+            const barTop = categoryBar.getBoundingClientRect().top;
+            categoryBar.classList.toggle('is-sticky', barTop <= headerOffset + 1);
+        } else {
+            categoryBar.classList.remove('is-sticky');
+        }
+    }
+
+    window.addEventListener('scroll', updateCategoryBarStickyOffset);
+    window.addEventListener('resize', updateCategoryBarStickyOffset);
+    window.addEventListener('load', updateCategoryBarStickyOffset);
+</script>
+
 
 {% endblock %}
