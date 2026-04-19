@@ -1242,6 +1242,32 @@
     window.addEventListener('resize', updateCategoryBarStickyOffset);
     window.addEventListener('load', updateCategoryBarStickyOffset);
 </script>
+<script>
+    function slugify(text) {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/&/g, 'and')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    function assignDynamicProductIds() {
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach((card, index) => {
+            if (card.id) return;
+
+            const title = card.querySelector('h3')?.innerText?.trim() || `product-${index + 1}`;
+            const section = card.closest('section[id]');
+            const sectionId = section?.id || 'products';
+
+            card.id = `prod-${sectionId}-${slugify(title)}`;
+        });
+    }
+
+    window.addEventListener('load', assignDynamicProductIds);
+</script>
 
 
 {% endblock %}
