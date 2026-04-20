@@ -129,6 +129,7 @@
         -webkit-tap-highlight-color: transparent;
         will-change: transform, box-shadow;
         transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        scroll-margin-top: var(--product-card-scroll-offset, 180px);
     }
 
     .product-card:hover {
@@ -260,27 +261,21 @@
 <style>
     :root {
         --mobile-sticky-top: 0px;
+        --product-card-scroll-offset: 180px;
     }
 
     .top-category-links {
-        position: relative;
-        z-index: 30;
+        position: sticky;
+        top: var(--mobile-sticky-top);
+        z-index: 40;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         transition: box-shadow 0.3s ease, background-color 0.3s ease;
     }
 
-    @media (max-width: 768px) {
-        .top-category-links {
-            position: sticky;
-            top: var(--mobile-sticky-top);
-            z-index: 40;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .top-category-links.is-sticky {
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-        }
+    .top-category-links.is-sticky {
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
     }
 </style>
 
@@ -439,33 +434,6 @@
                 </div>
             </div>
 
-            <div onclick="openModal('Anti-Fungal Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/anti-fungal_soap_roqgtt.png', 'Protective Skin Care', 'A specialized cleansing bar formulated to support hygienic skin care with powerful cleansing and protective properties.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/anti-fungal_soap_roqgtt.png" class="product-grid-img" alt="Anti-Fungal Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Anti-Fungal Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Protective Cleanse</p>
-                </div>
-            </div>
-
-            <div onclick="openModal('Toilet Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/toilet_soap_ecdfz3.png', 'Daily Bathing Essential', 'A dependable everyday bathing soap designed for effective cleansing, smooth lather, and long-lasting freshness.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/toilet_soap_ecdfz3.png" class="product-grid-img" alt="Toilet Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Toilet Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Daily Freshness</p>
-                </div>
-            </div>
 
             <div onclick="openModal('Glycerin Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589909/glycerin_soap_szh7xf.png', 'Moisture-Rich Care', 'A gentle glycerin soap that helps retain skin moisture, making it ideal for soft, supple, and refreshed skin.')"
                  class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
@@ -551,33 +519,6 @@
                 </div>
             </div>
 
-            <div onclick="openModal('Medicated Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589906/medicated_soap_auywyv.png', 'Targeted Hygiene Care', 'A medicated cleansing bar designed for thorough hygiene-focused care with a clean and effective finish.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589906/medicated_soap_auywyv.png" class="product-grid-img" alt="Medicated Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Medicated Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Hygiene Support</p>
-                </div>
-            </div>
-
-            <div onclick="openModal('Ayurvedic Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/ayurvedic_soap_jqqfxm.png', 'Traditional Wellness Care', 'An ayurvedic-inspired soap made to deliver a balanced cleansing experience with traditional herbal appeal.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/ayurvedic_soap_jqqfxm.png" class="product-grid-img" alt="Ayurvedic Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Ayurvedic Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Traditional Care</p>
-                </div>
-            </div>
 
             <div onclick="openModal('Organic Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/organic_soap_nhzzwo.png', 'Natural & Gentle', 'A naturally inspired organic soap designed for gentle cleansing with a clean and premium feel.')"
                  class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
@@ -593,19 +534,6 @@
                 </div>
             </div>
 
-            <div onclick="openModal('Crystal Glow Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/cyrystal_glow_uax8ng.png', 'Radiance & Smooth Finish', 'A beauty-focused soap crafted to cleanse gently while helping skin look luminous, polished, and fresh.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/cyrystal_glow_uax8ng.png" class="product-grid-img" alt="Crystal Glow Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Crystal Glow Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Radiant Glow</p>
-                </div>
-            </div>
 
             <div onclick="openModal('Calendula Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589907/calendula_soap_rrg3qv.png', 'Gentle Soothing Care', 'Calendula-inspired care helps provide a calm, comforting cleansing experience suitable for gentle skin care ranges.')"
                  class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
@@ -618,34 +546,6 @@
                 <div class="p-4 md:p-8 text-center">
                     <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Calendula Soap</h3>
                     <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Gentle Care</p>
-                </div>
-            </div>
-
-            <div onclick="openModal('Glutathione Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/glutathione_soap_tfgzeg.png', 'Glow & Brightening Care', 'A premium beauty soap positioned for brightening and glow-focused cleansing with a smooth, refined finish.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/glutathione_soap_tfgzeg.png" class="product-grid-img" alt="Glutathione Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Glutathione Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Glow Formula</p>
-                </div>
-            </div>
-
-            <div onclick="openModal('Laundry Cloth Washing Soap', 'https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/laundary_cloth_washing_soap_wtnjab.png', 'Fabric Cleaning Bar', 'A utility washing soap bar designed for effective cloth cleaning, stain lifting, and dependable everyday wash performance.')"
-                 class="product-card group block relative overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white shadow-sm hover:shadow-2xl transition-all cursor-pointer border border-gray-100">
-                <div class="relative overflow-hidden bg-gray-50">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776589908/laundary_cloth_washing_soap_wtnjab.png" class="product-grid-img" alt="Laundry Cloth Washing Soap">
-                    <div class="absolute inset-0 view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span class="bg-white text-slate-800 px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl">Quick View</span>
-                    </div>
-                </div>
-                <div class="p-4 md:p-8 text-center">
-                    <h3 class="text-lg md:text-2xl font-bold text-slate-800 mb-1 md:mb-2">Laundry Soap</h3>
-                    <p class="text-[#1e3a8a] font-bold uppercase tracking-widest text-[10px] md:text-xs">Fabric Cleaning</p>
                 </div>
             </div>
 
@@ -1189,19 +1089,43 @@
         });
     });
 
-    window.addEventListener('load', () => {
+    function scrollToTargetWithOffset(target) {
+        if (!target) return;
+
+        const headerOffset = getStickyHeaderOffset();
+        const categoryBar = document.getElementById('topCategoryBar');
+        const categoryBarHeight = categoryBar ? categoryBar.offsetHeight : 0;
+        const extraSpacing = 24;
+        const totalOffset = headerOffset + categoryBarHeight + extraSpacing;
+
+        const targetTop = target.getBoundingClientRect().top + window.pageYOffset - totalOffset;
+
+        window.scrollTo({
+            top: Math.max(targetTop, 0),
+            behavior: 'smooth'
+        });
+    }
+
+    function highlightTarget(target) {
+        target.classList.add('ring-4', 'ring-[#1e3a8a]', 'ring-offset-4', 'scale-105');
+        setTimeout(() => target.classList.remove('ring-4', 'ring-[#1e3a8a]', 'ring-offset-4', 'scale-105'), 3000);
+    }
+
+    function handleHashNavigation() {
         if (window.location.hash) {
             const targetId = window.location.hash.substring(1);
             const target = document.getElementById(targetId);
+
             if (target) {
                 setTimeout(() => {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    target.classList.add('ring-4', 'ring-[#1e3a8a]', 'ring-offset-4', 'scale-105');
-                    setTimeout(() => target.classList.remove('ring-4', 'ring-[#1e3a8a]', 'ring-offset-4', 'scale-105'), 3000);
+                    scrollToTargetWithOffset(target);
+                    highlightTarget(target);
                 }, 800);
             }
         }
-    });
+    }
+
+    window.addEventListener('load', handleHashNavigation);
 </script>
 <script>
     function getStickyHeaderOffset() {
@@ -1225,17 +1149,18 @@
         const categoryBar = document.getElementById('topCategoryBar');
         if (!categoryBar) return;
 
-        const isMobile = window.innerWidth <= 768;
-        const headerOffset = isMobile ? getStickyHeaderOffset() : 0;
+        const headerOffset = getStickyHeaderOffset();
+        const extraSpacing = 24;
+        const categoryBarHeight = categoryBar.offsetHeight || 0;
+        const totalScrollOffset = headerOffset + categoryBarHeight + extraSpacing;
 
         document.documentElement.style.setProperty('--mobile-sticky-top', `${headerOffset}px`);
+        document.documentElement.style.setProperty('--product-card-scroll-offset', `${totalScrollOffset}px`);
 
-        if (isMobile) {
-            const barTop = categoryBar.getBoundingClientRect().top;
-            categoryBar.classList.toggle('is-sticky', barTop <= headerOffset + 1);
-        } else {
-            categoryBar.classList.remove('is-sticky');
-        }
+        const barTop = categoryBar.getBoundingClientRect().top;
+        const shouldStick = window.scrollY > 0 && barTop <= headerOffset + 1;
+
+        categoryBar.classList.toggle('is-sticky', shouldStick);
     }
 
     window.addEventListener('scroll', updateCategoryBarStickyOffset);

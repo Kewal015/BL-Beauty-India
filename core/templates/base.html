@@ -283,8 +283,114 @@
     });
 
     let availableCategories = [];
+    let availableProducts = [];
     let placeholderInterval = null;
     let placeholderIndex = 0;
+
+    function slugify(text) {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/&/g, 'and')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    function getStickyOffset() {
+        let totalOffset = 0;
+
+        const topNav = document.querySelector('nav');
+        const categoryBar = document.getElementById('topCategoryBar');
+
+        if (topNav) {
+            const styles = window.getComputedStyle(topNav);
+            if ((styles.position === 'sticky' || styles.position === 'fixed') && topNav.offsetHeight > 0) {
+                totalOffset += topNav.offsetHeight;
+            }
+        }
+
+        if (categoryBar) {
+            const styles = window.getComputedStyle(categoryBar);
+            if ((styles.position === 'sticky' || styles.position === 'fixed') && categoryBar.offsetHeight > 0) {
+                totalOffset += categoryBar.offsetHeight;
+            }
+        }
+
+        return totalOffset;
+    }
+
+    function scrollElementIntoVisibleArea(element, behavior = 'smooth') {
+        if (!element) return;
+
+        const stickyOffset = getStickyOffset();
+        const extraSpace = 24;
+        const viewportPaddingBottom = 24;
+
+        const rect = element.getBoundingClientRect();
+        const absoluteTop = rect.top + window.pageYOffset;
+        const elementHeight = element.offsetHeight;
+        const availableViewportHeight = window.innerHeight - stickyOffset - extraSpace - viewportPaddingBottom;
+
+        let targetTop = absoluteTop - stickyOffset - extraSpace;
+
+        if (elementHeight < availableViewportHeight) {
+            const centeredTop = absoluteTop - stickyOffset - extraSpace - ((availableViewportHeight - elementHeight) / 2);
+            targetTop = Math.max(centeredTop, 0);
+        }
+
+        window.scrollTo({
+            top: Math.max(targetTop, 0),
+            behavior: behavior
+        });
+    }
+
+    function highlightTarget(target) {
+        if (!target) return;
+
+        target.classList.add('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4');
+        setTimeout(() => {
+            target.classList.remove('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4');
+        }, 2200);
+    }
+
+    function navigateToProductTarget(targetId) {
+        if (window.location.pathname.includes('/products')) {
+            const target = document.getElementById(targetId);
+            if (target) {
+                scrollElementIntoVisibleArea(target, 'smooth');
+                highlightTarget(target);
+            }
+        } else {
+            window.location.href = `/products/#${targetId}`;
+        }
+    }
+
+    function navigateToCategoryTarget(targetId) {
+        if (window.location.pathname.includes('/products')) {
+            const target = document.getElementById(targetId);
+            if (target) {
+                scrollElementIntoVisibleArea(target, 'smooth');
+                highlightTarget(target);
+            }
+        } else {
+            window.location.href = `/products/#${targetId}`;
+        }
+    }
+
+    function handleHashNavigation() {
+        if (!window.location.pathname.includes('/products')) return;
+        if (!window.location.hash) return;
+
+        const targetId = window.location.hash.substring(1);
+        const target = document.getElementById(targetId);
+
+        if (!target) return;
+
+        setTimeout(() => {
+            scrollElementIntoVisibleArea(target, 'smooth');
+            highlightTarget(target);
+        }, 500);
+    }
 
     async function refreshCategoryData() {
         try {
@@ -309,17 +415,45 @@
                 }
 
                 return {
+                    type: 'category',
                     id: sectionId,
                     title: title,
                     sub: subtitle
                 };
             }).filter(category => category.id && category.title);
 
+            const productCards = doc.querySelectorAll('.product-card');
+
+            availableProducts = Array.from(productCards).map((card, index) => {
+                let productId = card.id;
+                const title = card.querySelector('h3')?.textContent?.trim() || '';
+                const subtitle = card.querySelector('p')?.textContent?.trim() || 'Product';
+                const image = card.querySelector('img')?.getAttribute('src') || '';
+                const section = card.closest('section[id]');
+                const sectionId = section?.id || '';
+                const categoryTitle = section?.querySelector('h2')?.textContent?.trim() || 'Category';
+
+                if (!productId && title && sectionId) {
+                    productId = `prod-${sectionId}-${slugify(title)}`;
+                }
+
+                return {
+                    type: 'product',
+                    id: productId || `product-${index + 1}`,
+                    title: title,
+                    sub: subtitle,
+                    image: image,
+                    categoryId: sectionId,
+                    categoryTitle: categoryTitle
+                };
+            }).filter(product => product.id && product.title);
+
             startSearchPlaceholderRotation();
-            console.log('Search indexed', availableCategories.length, 'categories.');
+            console.log('Search indexed', availableCategories.length, 'categories and', availableProducts.length, 'products.');
         } catch (err) {
             console.error('Could not index categories for search:', err);
             availableCategories = [];
+            availableProducts = [];
         }
     }
 
@@ -357,43 +491,61 @@
         suggestionBox.classList.add('hidden');
     }
 
-    function renderSuggestions(categories) {
+    function navigateToSuggestion(item) {
+        if (item.type === 'category') {
+            navigateToCategoryTarget(item.id);
+        }
+
+        if (item.type === 'product') {
+            navigateToProductTarget(item.id);
+        }
+
+        hideSuggestions();
+        searchInput.value = '';
+        updateClearButton();
+    }
+
+    function renderSuggestions(items, showProductPhotos = false) {
         suggestionBox.innerHTML = '';
 
-        if (!categories.length) {
+        if (!items.length) {
             hideSuggestions();
             return;
         }
 
         suggestionBox.classList.remove('hidden');
 
-        categories.forEach(category => {
+        items.forEach(item => {
             const div = document.createElement('div');
             div.className = 'px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors';
-            div.innerHTML = `
-                <p class="text-sm font-bold text-slate-800">${category.title}</p>
-                <p class="text-[10px] text-[#8CB4E0] uppercase font-semibold">${category.sub}</p>
-            `;
 
-            div.onclick = () => {
-                if (window.location.pathname.includes('/products')) {
-                    const target = document.getElementById(category.id);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        target.classList.add('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4');
-                        setTimeout(() => {
-                            target.classList.remove('ring-4', 'ring-[#8CB4E0]', 'ring-offset-4');
-                        }, 2000);
-                    }
-                } else {
-                    window.location.href = `/products/#${category.id}`;
-                }
+            if (item.type === 'category') {
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-[#8CB4E0]/10 flex items-center justify-center text-[#6F95B7] font-bold text-xs shrink-0">
+                            CAT
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-slate-800 truncate">${item.title}</p>
+                            <p class="text-[10px] text-[#8CB4E0] uppercase font-semibold">${item.sub}</p>
+                        </div>
+                    </div>
+                `;
+            }
 
-                hideSuggestions();
-                searchInput.value = '';
-                updateClearButton();
-            };
+            if (item.type === 'product') {
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="${item.image}" alt="${item.title}" class="w-12 h-12 rounded-lg object-cover bg-gray-50 border border-gray-100 shrink-0">
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-slate-800 truncate">${item.title}</p>
+                            <p class="text-[10px] text-[#8CB4E0] uppercase font-semibold truncate">${item.categoryTitle} • ${item.sub}</p>
+                        </div>
+                    </div>
+                `;
+            }
 
+            div.onclick = () => navigateToSuggestion(item);
             suggestionBox.appendChild(div);
         });
     }
@@ -401,13 +553,13 @@
     function clearSearch() {
         searchInput.value = '';
         updateClearButton();
-        renderSuggestions(availableCategories);
+        renderSuggestions(availableCategories, false);
         searchInput.focus();
     }
 
     searchInput.addEventListener('focus', () => {
         if (!searchInput.value.trim() && availableCategories.length) {
-            renderSuggestions(availableCategories);
+            renderSuggestions(availableCategories, false);
         }
     });
 
@@ -416,16 +568,17 @@
         updateClearButton();
 
         if (!value) {
-            renderSuggestions(availableCategories);
+            renderSuggestions(availableCategories, false);
             return;
         }
 
-        const filtered = availableCategories.filter(category =>
-            category.title.toLowerCase().includes(value) ||
-            category.sub.toLowerCase().includes(value)
+        const filteredProducts = availableProducts.filter(product =>
+            product.title.toLowerCase().includes(value) ||
+            product.sub.toLowerCase().includes(value) ||
+            product.categoryTitle.toLowerCase().includes(value)
         );
 
-        renderSuggestions(filtered);
+        renderSuggestions(filteredProducts, true);
     });
 
     clearSearchBtn.addEventListener('click', clearSearch);
@@ -439,6 +592,9 @@
     });
 
     refreshCategoryData();
+
+    window.addEventListener('load', handleHashNavigation);
+    window.addEventListener('pageshow', handleHashNavigation);
 
     const btn = document.getElementById("menu-btn");
     const menu = document.getElementById("mobile-menu");
