@@ -54,10 +54,205 @@
         pointer-events: none;
     }
 
-    /* --- DYNAMIC CAROUSEL STYLING --- */
+    /* --- CATEGORY SECTION STYLING --- */
+    .browse-category-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1.5rem;
+        justify-items: center;
+        align-items: start;
+    }
+
+    .browse-category-item {
+        grid-column: span 2;
+        width: 100%;
+        max-width: 220px;
+    }
+
+    .parent-category-card {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        aspect-ratio: 1/1;
+        cursor: pointer;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.25rem;
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .parent-category-card img {
+        width: 72%;
+        height: 72%;
+        object-fit: contain;
+        transition: transform 0.45s cubic-bezier(0.2, 0, 0.2, 1);
+    }
+
+    .parent-category-card.category-icon-mode {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .parent-category-card.category-icon-mode img {
+        width: 72%;
+        height: 72%;
+        object-fit: contain;
+    }
+
+    .parent-category-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 35px -12px rgba(140, 180, 224, 0.45);
+        border-color: #8CB4E0;
+    }
+
+    .parent-category-card:hover img {
+        transform: scale(1.08);
+    }
+
+    .category-info {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .category-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .category-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.3) 50%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .category-dropdown {
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e293b;
+        border-radius: 10px;
+        padding: 10px 40px 10px 12px;
+        width: 100%;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: 1px solid #dbeafe;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238CB4E0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .category-dropdown:focus {
+        border-color: #8CB4E0;
+        box-shadow: 0 0 0 4px rgba(140, 180, 224, 0.15);
+    }
+
+    /* Desktop: 4 icons first row, 3 centered second row */
+    @media (min-width: 1024px) {
+        .browse-category-grid {
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 2rem;
+        }
+
+        .browse-category-item {
+            grid-column: span 3;
+            max-width: none;
+        }
+
+        .browse-category-item:nth-child(5) { grid-column: 2 / span 3; }
+        .browse-category-item:nth-child(6) { grid-column: 5 / span 3; }
+        .browse-category-item:nth-child(7) { grid-column: 8 / span 3; }
+    }
+
+    /* Tablet */
+    @media (max-width: 1023px) and (min-width: 641px) {
+        .carousel-item { flex: 0 0 calc(50% - 10px); }
+        .browse-category-grid {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+        .browse-category-item {
+            grid-column: span 2;
+        }
+        .browse-category-item:nth-child(7) {
+            grid-column: 3 / span 2;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .carousel-outer-container { padding: 0 30px; }
+        .carousel-track { gap: 12px; }
+        .carousel-item { flex: 0 0 calc(50% - 8px); } /* consistent spacing */
+.product-card-img { height: 180px !important; } /* match main */
+        .nav-button { width: 34px; height: 34px; }
+        .nav-button.prev { left: -5px; }
+        .nav-button.next { right: -5px; }
+
+        .browse-category-grid {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 1.25rem 0.9rem;
+        }
+
+        .browse-category-item {
+            grid-column: span 2;
+            max-width: none;
+        }
+
+        .browse-category-item:nth-child(7) {
+            grid-column: 3 / span 2;
+        }
+
+        .parent-category-card {
+            padding: 0.9rem;
+            border-radius: 20px;
+        }
+
+        .parent-category-card img,
+        .parent-category-card.category-icon-mode img {
+            width: 68%;
+            height: 68%;
+        }
+
+        .category-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .category-dropdown {
+            font-size: 0.8rem;
+            padding: 9px 34px 9px 10px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-mobile-bg {
+            background-image: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.1)), url('https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/hero-mobile_rtrax7.png') !important;
+            background-size: cover;
+            background-position: center center !important;
+            width: 100%;
+            height: 80vh;
+            position: relative;
+        }
+    }
+
     .carousel-outer-container {
         position: relative;
-        padding: 0 40px; /* Space for buttons */
+        padding: 0 40px;
         margin: 0 auto;
     }
 
@@ -67,21 +262,38 @@
     }
 
     .carousel-track {
-        display: flex;
-        gap: 20px;
-        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        will-change: transform;
-        padding: 10px 0; /* Space for shadows */
-    }
+    display: flex;
+    gap: 20px;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+    padding: 10px 0;
 
+    scroll-snap-type: x mandatory; /* 🔥 smoother snapping */
+}
+
+   .carousel-item {
+    flex: 0 0 calc(25% - 15px); /* desktop */
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+/* Tablet */
+@media (max-width: 1023px) and (min-width: 641px) {
     .carousel-item {
-        flex: 0 0 calc(25% - 15px); /* Default for Desktop (4 items) */
-        min-width: 0;
+        flex: 0 0 calc(50% - 10px);
     }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .carousel-item {
+        flex: 0 0 calc(50% - 8px); /* ✅ 2 per row */
+    }
+}
 
     .nav-button {
         position: absolute;
-        top: 50%; /* Center vertically */
+        top: 50%;
         transform: translateY(-50%);
         width: 40px;
         height: 40px;
@@ -106,50 +318,15 @@
     .nav-button.prev { left: 0; }
     .nav-button.next { right: 0; }
 
-    /* MOBILE OPTIMIZATION */
-    @media (max-width: 1023px) and (min-width: 641px) {
-        .carousel-item { flex: 0 0 calc(50% - 10px); }
-    }
-
-    @media (max-width: 640px) {
-        .carousel-outer-container {
-            padding: 0 30px; /* Narrower space for smaller buttons */
-        }
-        .carousel-track {
-            gap: 12px;
-        }
-        .carousel-item {
-            flex: 0 0 calc(50% - 6px);
-        }
-        .product-card-img {
-            height: 160px !important; /* Proper square-ish aspect ratio for mobile */
-        }
-        .nav-button {
-            width: 34px;
-            height: 34px;
-        }
-        .nav-button.prev { left: -5px; }
-        .nav-button.next { right: -5px; }
-    }
-    /* --- END CAROUSEL STYLING --- */
-
-    @media (max-width: 768px) {
-        .hero-mobile-bg {
-            background-image: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.1)), url('https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385817/hero-mobile_rtrax7.png') !important;
-            background-size: cover;
-            background-position: center center !important;
-            width: 100%;
-            height: 80vh;
-            position: relative;
-        }
-    }
-
     .product-card-img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
+    width: 100%;
+    height: 180px; /* ✅ better for mobile */
+    object-fit: contain; /* ✅ no cropping */
+    object-position: center;
+    background: #f8fafc;
+    padding: 0.75rem;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
 
     .process-icon-container {
         width: 6.5rem;
@@ -256,17 +433,14 @@
         </div>
 
         <div class="carousel-outer-container">
-            <!-- Centered Nav Buttons -->
             <button class="nav-button prev" id="prevBtn" aria-label="Previous">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-
             <div class="carousel-track-viewport">
                 <div class="carousel-track" id="dynamic-product-carousel">
                     <div class="text-center py-10 w-full text-gray-400">Loading categories...</div>
                 </div>
             </div>
-
             <button class="nav-button next" id="nextBtn" aria-label="Next">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
             </button>
@@ -274,7 +448,145 @@
     </div>
 </section>
 
-<section class="py-20 px-6 bg-slate-50 border-t border-gray-100">
+<section class="py-20 px-6 bg-slate-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-slate-800 mb-4">Browse by Category</h2>
+            <p class="text-gray-500">Explore our diverse range of product formulations.</p>
+        </div>
+
+        <div class="browse-category-grid">
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_1_fdqbtm.png" alt="Soaps">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Soaps</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Soap Type...</option>
+                        <option value="sandalwood-soap">Sandalwood Soap</option>
+                        <option value="tan-removal-soap">Tan Removal Soap</option>
+                        <option value="neem-soap">Neem Soap</option>
+                        <option value="cucumber-soap">Cucumber Soap</option>
+                        <option value="shikakai-soap">Shikakai Soap</option>
+                        <option value="aloe-vera-soap">Aloe Vera Soap</option>
+                        <option value="glycerin-soap">Glycerin Soap</option>
+                        <option value="charcoal-soap">Charcoal Soap</option>
+                        <option value="moisturizing-soap">Moisturizing Soap</option>
+                        <option value="mens-soap">Men's Soap</option>
+                        <option value="orange-peel-soap">Orange Peel Soap</option>
+                        <option value="herbal-soap">Herbal Soap</option>
+                        <option value="organic-soap">Organic Soap</option>
+                        <option value="calendula-soap">Calendula Soap</option>
+                        <option value="skin-whitening-soap">Skin Whitening Soap</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776833058/Screenshot_2026-04-21_102007_hdwptj.png" alt="Men's Grooming Icon">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Men's Grooming</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Grooming Product...</option>
+                        <option value="mens-face-wash">Men's Face Wash</option>
+                        <option value="beard-oil">Beard Oil</option>
+                        <option value="beard-wash">Beard Wash</option>
+                        <option value="beard-wax">Beard Wax</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095941_b6raih.jpg" alt="Body Care">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Body Care</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Body Care...</option>
+                        <option value="talcum-powder">Talcum Powder</option>
+                        <option value="hand-cream">Hand Cream</option>
+                        <option value="body-scrub">Body Scrub</option>
+                        <option value="foot-cream">Foot Cream</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095902_iupumu.jpg" alt="Color Cosmetics">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Color Cosmetics</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Cosmetic...</option>
+                        <option value="lipsticks">Lipsticks</option>
+                        <option value="kajal-mascara">Kajal & Mascara</option>
+                        <option value="blush-highlighter">Blush & Highlighter</option>
+                        <option value="foundation">Foundation</option>
+                        <option value="make-up-remover">Make-up Remover</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095929_fj7jsx.jpg" alt="Skin Care">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Skin Care</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Skin Care...</option>
+                        <option value="face-wash">Face Wash</option>
+                        <option value="face-scrub">Face Scrub</option>
+                        <option value="walnut-face-scrub">Walnut Face Scrub</option>
+                        <option value="face-moisturizer">Face Moisturizer</option>
+                        <option value="radiance-boost-serum">Radiance Boost Serum</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095911_ac1bkt.jpg" alt="Hair Care">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Hair Care</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Hair Care...</option>
+                        <option value="hair-serum">Hair Serum</option>
+                        <option value="shampoo">Shampoo</option>
+                        <option value="aqua-fresh">Aqua Fresh</option>
+                        <option value="gloss-serum">Gloss Serum</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="browse-category-item">
+                <div class="parent-category-card category-icon-mode group">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_ti3lhs.png" alt="Baby Care">
+                </div>
+                <div class="category-info">
+                    <h3 class="category-title">Baby Care</h3>
+                    <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
+                        <option value="">Select Baby Care...</option>
+                        <option value="baby-cream">Baby Cream</option>
+                        <option value="baby-oil">Baby Oil</option>
+                        <option value="baby-moisturizer">Baby Moisturizer</option>
+                        <option value="baby-powder">Baby Powder</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-20 px-6 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Brands That Trust Us</h2>
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 mt-12">
@@ -292,7 +604,7 @@
     </div>
 </section>
 
-<section class="py-16 bg-white" id="counter-section">
+<section class="py-16 bg-slate-50" id="counter-section">
     <div class="max-w-6xl mx-auto px-6">
         <div class="grid grid-cols-2 md:grid-cols-4 text-center">
             <div class="counter-box py-6">
@@ -404,24 +716,28 @@
             };
 
             nextBtn.addEventListener('click', () => {
-                const visibleItems = window.innerWidth >= 1024 ? 4 : (window.innerWidth >= 640 ? 2 : 2);
-                if (index < track.children.length - visibleItems) {
-                    index++;
-                } else {
-                    index = 0;
-                }
-                updateCarousel();
-            });
+    const visibleItems = window.innerWidth >= 1024 ? 4 : 2;
 
-            prevBtn.addEventListener('click', () => {
-                const visibleItems = window.innerWidth >= 1024 ? 4 : (window.innerWidth >= 640 ? 2 : 2);
-                if (index > 0) {
-                    index--;
-                } else {
-                    index = Math.max(0, track.children.length - visibleItems);
-                }
-                updateCarousel();
-            });
+    if (index < track.children.length - visibleItems) {
+        index++;
+    } else {
+        index = 0;
+    }
+
+    updateCarousel();
+});
+
+prevBtn.addEventListener('click', () => {
+    const visibleItems = window.innerWidth >= 1024 ? 4 : 2;
+
+    if (index > 0) {
+        index--;
+    } else {
+        index = Math.max(0, track.children.length - visibleItems);
+    }
+
+    updateCarousel();
+});
 
             window.addEventListener('resize', () => {
                 index = 0;
