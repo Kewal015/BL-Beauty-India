@@ -85,12 +85,11 @@
         transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
     }
 
-    .parent-category-card img {
-        width: 72%;
-        height: 72%;
-        object-fit: contain;
-        transition: transform 0.45s cubic-bezier(0.2, 0, 0.2, 1);
-    }
+   .parent-category-card img {
+    width: 85%;   /* 🔥 bigger icon */
+    height: 85%;
+    object-fit: contain;
+}
 
     .parent-category-card.category-icon-mode {
         background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
@@ -116,9 +115,13 @@
     }
 
     .category-info {
-        text-align: center;
-        margin-top: 1rem;
-    }
+    text-align: center;
+    margin-top: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 🔥 forces equal spacing */
+    height: 110px; /* 🔥 fixed height for alignment */
+}
 
     .category-title {
         font-size: 1.1rem;
@@ -139,25 +142,32 @@
         transition: all 0.3s ease;
     }
 
-    .category-dropdown {
-        background: rgba(255, 255, 255, 0.95);
-        color: #1e293b;
-        border-radius: 10px;
-        padding: 10px 40px 10px 12px;
-        width: 100%;
-        font-size: 0.9rem;
-        font-weight: 600;
-        border: 1px solid #dbeafe;
-        outline: none;
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238CB4E0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1em;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
+.category-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 10px 40px 10px 12px; /* extra right space for arrow */
+    width: 100%;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #dbeafe;
+    outline: none;
+    cursor: pointer;
 
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* 🔥 CUSTOM ARROW */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2364748b' viewBox='0 0 20 20'%3E%3Cpath d='M5 7l5 5 5-5H5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
     .category-dropdown:focus {
         border-color: #8CB4E0;
         box-shadow: 0 0 0 4px rgba(140, 180, 224, 0.15);
@@ -218,20 +228,26 @@
         }
 
         .parent-category-card {
-            padding: 0.9rem;
-            border-radius: 20px;
-        }
+    padding: 0.6rem;
+    height: 110px;
 
-        .parent-category-card img,
-        .parent-category-card.category-icon-mode img {
-            width: 68%;
-            height: 68%;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.parent-category-card img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    transform: scale(1.1); /* 🔥 slight boost */
+}
+
 
         .category-title {
-            font-size: 0.95rem;
-            margin-bottom: 0.6rem;
-        }
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    min-height: 38px; /* 🔥 equal text height */
+}
 
         .category-dropdown {
             font-size: 0.8rem;
@@ -371,6 +387,12 @@
 
     .counter-box { border-right: 1px solid rgba(226, 232, 240, 0.8); }
     .counter-box:last-child { border-right: none; }
+  .category-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.4rem;
+    min-height: 32px;
+}
 </style>
 
 <div id="initial-popup">
@@ -387,8 +409,9 @@
         <div class="max-w-2xl text-left">
             <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">BL Beauty India</h1>
             <p class="text-lg md:text-xl text-gray-200 mb-10 font-light max-w-md">
-                Premium Cosmetics | Soap | Lipstick Manufacturing. High-end formulations tailored for your brand's success.
-            </p>
+    We help you create your own beauty brand from idea to final product.
+    Whether you're starting small or scaling big, we handle everything from formulation to manufacturing.
+</p>
             <div class="flex flex-wrap gap-4">
                 <a href="/products/" style="background-color: #8CB4E0;" class="text-white px-10 py-4 rounded-full text-lg font-semibold shadow-lg active:scale-95 transition-all">Explore Products</a>
                 <a href="/contact/" class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-10 py-4 rounded-full text-lg font-semibold active:scale-95 transition-all">Partner With Us</a>
@@ -400,23 +423,30 @@
 <section class="py-20 px-6 bg-slate-50">
     <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-4xl font-bold text-slate-800 mb-4">Our Collaborative Process</h2>
-        <p class="text-gray-500 mb-16">From concept to shelf, we bring your vision to life.</p>
+        <p class="text-gray-500 mb-6 max-w-2xl mx-auto">
+    Starting your own product can feel confusing. That’s why we keep things simple and guide you at every step.
+</p>
+<p class="text-gray-400 mb-16">From idea to final delivery, we handle everything for you.</p>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div class="group">
                 <div class="process-icon-container"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385824/consult_wxtefc.png" alt="Consultation"></div>
                 <h4 class="font-bold text-slate-700 mb-2">Consultation</h4>
+                <p class="text-sm text-gray-500">We understand your idea and what you want to build.</p>
             </div>
             <div class="group">
                 <div class="process-icon-container"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385823/rnd_zqplor.png" alt="Formulation"></div>
                 <h4 class="font-bold text-slate-700 mb-2">Formulation</h4>
+                <p class="text-sm text-gray-500">We create the right formula based on your product needs.</p>
             </div>
             <div class="group">
                 <div class="process-icon-container"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385824/production_zsoqvt.png" alt="Production"></div>
                 <h4 class="font-bold text-slate-700 mb-2">Production</h4>
+                <p class="text-sm text-gray-500">Your products are manufactured with quality and care.</p>
             </div>
             <div class="group">
                 <div class="process-icon-container"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385823/delievery_txkrif.png" alt="Delivery"></div>
                 <h4 class="font-bold text-slate-700 mb-2">Delivery</h4>
+                <p class="text-sm text-gray-500">Products are packed and delivered ready to sell.</p>
             </div>
         </div>
     </div>
@@ -427,7 +457,13 @@
         <div class="flex flex-col md:flex-row justify-between items-end mb-12">
             <div class="text-left">
                 <h2 class="text-3xl md:text-4xl font-bold mb-2 text-slate-800">Manufacturing Expertise</h2>
-                <p class="text-gray-500">Private label and bulk manufacturing solutions across all categories.</p>
+                <p class="text-gray-500 max-w-xl">
+    Whether you want to launch your own brand or grow your product range,
+    we provide complete manufacturing support from small batches to bulk production.
+</p>
+<p class="text-sm text-slate-400 mt-3">
+    ✔ Low MOQ available • ✔ Custom formulas • ✔ Fast production
+</p>
             </div>
             <a href="/products/" style="color: #8CB4E0; border-color: #8CB4E0;" class="mt-4 md:mt-0 font-semibold border-b-2 pb-1 hover:opacity-70 transition">View Full Catalog &rarr;</a>
         </div>
@@ -452,17 +488,21 @@
     <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-bold text-slate-800 mb-4">Browse by Category</h2>
-            <p class="text-gray-500">Explore our diverse range of product formulations.</p>
+            <p class="text-gray-500 max-w-2xl mx-auto">
+    Not sure where to start? Explore our categories and choose what fits your brand.
+    Each category offers multiple products you can customize.
+</p>
         </div>
 
         <div class="browse-category-grid">
 
             <div class="browse-category-item">
                 <div class="parent-category-card category-icon-mode group">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_1_fdqbtm.png" alt="Soaps">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095929_fj7jsx.jpg" alt="Soaps">
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Soaps</h3>
+                    <p class="category-desc">Daily use soaps for clean, fresh and healthy skin.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Soap Type...</option>
                         <option value="sandalwood-soap">Sandalwood Soap</option>
@@ -490,6 +530,7 @@
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Men's Grooming</h3>
+                    <p class="category-desc">Everything men need for grooming and care.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Grooming Product...</option>
                         <option value="mens-face-wash">Men's Face Wash</option>
@@ -502,10 +543,11 @@
 
             <div class="browse-category-item">
                 <div class="parent-category-card category-icon-mode group">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095941_b6raih.jpg" alt="Body Care">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_1_fdqbtm.png" alt="Body Care">
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Body Care</h3>
+                    <p class="category-desc">Keep your body soft, smooth and refreshed.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Body Care...</option>
                         <option value="talcum-powder">Talcum Powder</option>
@@ -518,10 +560,11 @@
 
             <div class="browse-category-item">
                 <div class="parent-category-card category-icon-mode group">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095902_iupumu.jpg" alt="Color Cosmetics">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_ti3lhs.png" alt="Color Cosmetics">
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Color Cosmetics</h3>
+                    <p class="category-desc">Makeup products to enhance your look.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Cosmetic...</option>
                         <option value="lipsticks">Lipsticks</option>
@@ -535,10 +578,11 @@
 
             <div class="browse-category-item">
                 <div class="parent-category-card category-icon-mode group">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095929_fj7jsx.jpg" alt="Skin Care">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095902_iupumu.jpg" alt="Skin Care">
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Skin Care</h3>
+                    <p class="category-desc">Simple solutions for glowing healthy skin.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Skin Care...</option>
                         <option value="face-wash">Face Wash</option>
@@ -556,6 +600,7 @@
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Hair Care</h3>
+                    <p class="category-desc">Care for strong, smooth and shiny hair.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Hair Care...</option>
                         <option value="hair-serum">Hair Serum</option>
@@ -568,10 +613,11 @@
 
             <div class="browse-category-item">
                 <div class="parent-category-card category-icon-mode group">
-                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Untitled_design_ti3lhs.png" alt="Baby Care">
+                    <img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1776747308/Screenshot_2026-04-21_095941_b6raih.jpg" alt="Baby Care">
                 </div>
                 <div class="category-info">
                     <h3 class="category-title">Baby Care</h3>
+                    <p class="category-desc">Safe and gentle care for babies.</p>
                     <select class="category-dropdown" onchange="if(this.value) window.location.href='/products/#'+this.value">
                         <option value="">Select Baby Care...</option>
                         <option value="baby-cream">Baby Cream</option>
@@ -589,6 +635,9 @@
 <section class="py-20 px-6 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Brands That Trust Us</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">
+    We work with growing and established brands across India.
+</p>
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6 mt-12">
             <div class="brand-logo-card"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775385822/brand1_xopei0.png" alt="Brand 1"></div>
             <div class="brand-logo-card"><img src="https://res.cloudinary.com/dowbv9xat/image/upload/q_auto/f_auto/v1775499542/brand2_meqhi1.png" alt="Brand 2"></div>
@@ -606,6 +655,9 @@
 
 <section class="py-16 bg-slate-50" id="counter-section">
     <div class="max-w-6xl mx-auto px-6">
+        <p class="text-center text-gray-500 mb-10 max-w-2xl mx-auto">
+    We have helped businesses build successful products with reliable manufacturing and consistent quality.
+</p>
         <div class="grid grid-cols-2 md:grid-cols-4 text-center">
             <div class="counter-box py-6">
                 <span class="block text-3xl md:text-5xl font-bold text-slate-800 mb-2"><span class="animate-counter" data-target="30">0</span>+</span>
@@ -631,7 +683,13 @@
     <div class="max-w-5xl mx-auto px-6">
         <div class="cta-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
             <div class="relative z-10">
-                <h2 class="text-4xl md:text-6xl font-bold mb-8 text-slate-800 leading-tight">Elevate Your Brand with BL Beauty</h2>
+               <h2 class="text-4xl md:text-6xl font-bold mb-6 text-slate-800 leading-tight">
+    Ready to Start Your Own Brand?
+</h2>
+
+<p class="text-gray-500 mb-8 max-w-xl mx-auto">
+    Tell us what you want to create we’ll help you turn it into a real product.
+</p>
                 <a href="/contact/" style="background-color: #475569;" class="text-white px-12 py-5 rounded-full text-lg font-semibold hover:shadow-2xl transition-all inline-block active:scale-95">Start Business Inquiry</a>
             </div>
         </div>
